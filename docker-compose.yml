@@ -7,5 +7,6 @@ services:
     ports:
       - 5000:5000
     image: app:flask
+    env_file: .env
     container_name: flask_web
     command: python src/app.py
