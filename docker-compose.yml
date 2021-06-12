@@ -1,0 +1,11 @@
+version: "3.8"
+services:
+  app:
+    build: .
+    volumes:
+      - .:/app
+    ports:
+      - 5000:5000
+    image: app:flask
+    container_name: flask_web
+    command: python src/app.py
