@@ -9,4 +9,25 @@ services:
     image: app:flask
     env_file: .env
     container_name: flask_web
+    hostname: web
     command: python src/app.py
+    depends_on:
+      - db
+
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    container_name: postgres_db
+    hostname: db
+    ports:
+      - 5432:5432
+    volumes:
+      - ./pgsql/data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
