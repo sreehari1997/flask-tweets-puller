@@ -20,7 +20,7 @@ CREATE TABLE tweets (
     tweet_id bigint PRIMARY KEY,
     tweet_text character varying(300),
     created_at timestamp without time zone,
-    "user" integer REFERENCES users(id) ON DELETE CASCADE
+    twitter_user integer REFERENCES users(id) ON DELETE CASCADE
 );
 
 -- Indices -------------------------------------------------------

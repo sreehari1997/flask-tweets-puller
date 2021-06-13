@@ -3,6 +3,15 @@ from flask import Flask, redirect, url_for, jsonify
 from flask_dance.contrib.twitter import make_twitter_blueprint, twitter
 from twitter_utils import get_timeline_for_user
 from flask_sqlalchemy import SQLAlchemy
+from db_utils import (
+    get_user_id,
+    update_last_pulled_time_for_user,
+    get_last_pulled_time_for_user,
+    write_tweets_to_db,datetime,
+    initialize_user,
+    update_tweets_pulled_for_user
+)
+from datetime import datetime
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -17,8 +26,17 @@ def index():
     resp = twitter.get("account/verify_credentials.json")
     assert resp.ok
     twitter_username = resp.json()["screen_name"]
-    timeline = get_timeline_for_user(twitter_username)
-    return jsonify(timeline)
+    user_id = get_user_id(db.engine, twitter_username)
+    last_pulled_at = get_last_pulled_time_for_user(db.engine, twitter_username)
+    if user_id:
+        update_last_pulled_time_for_user(db.engine, twitter_username, datetime.utcnow())
+    else:
+        initialize_user(db.engine, twitter_username, datetime.utcnow())
+
+    timeline, count = get_timeline_for_user(twitter_username, last_pulled_at)
+    update_tweets_pulled_for_user(db.engine, twitter_username, count)
+    write_tweets_to_db(db.engine, timeline, twitter_username)
+    return jsonify({"success": True})
 
 @app.route("/check")
 def db_check():
