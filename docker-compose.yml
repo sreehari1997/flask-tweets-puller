@@ -15,7 +15,8 @@ services:
       - db
 
   db:
-    image: postgres
+    image: postgres:10.5
+    restart: always
     environment:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
@@ -26,6 +27,7 @@ services:
       - 5432:5432
     volumes:
       - ./pgsql/data:/var/lib/postgresql/data
+      - ./sql/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
