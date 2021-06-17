@@ -1,4 +1,5 @@
 from .config import Config
+from .proxy import ReverseProxied
 from flask import Flask, redirect, url_for, render_template
 from flask_dance.contrib.twitter import make_twitter_blueprint, twitter
 from .db_utils import (
@@ -10,9 +11,11 @@ from .db_utils import (
 from .forms import FilterForm, SearchForm
 
 app = Flask(__name__)
+app.wsgi_app = ReverseProxied(app.wsgi_app)
 app.config.from_object(Config)
 twitter_bp = make_twitter_blueprint()
 app.register_blueprint(twitter_bp, url_prefix="/login")
+
 
 @app.route("/", methods=['GET','POST'])
 def index():
