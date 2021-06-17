@@ -5,12 +5,12 @@ services:
     volumes:
       - .:/app
     ports:
-      - 5000:5000
+      - 8000:8000
     image: app:flask
     env_file: .env
     container_name: flask_web
     hostname: web
-    command: python src/app.py
+    command: gunicorn -w 1 -b 0.0.0.0:8000 src.wsgi:app
     depends_on:
       - db
 
@@ -33,3 +33,13 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  nginx:
+    image: nginx:1.15.8
+    restart: always
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
