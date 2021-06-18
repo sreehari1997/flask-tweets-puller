@@ -4,11 +4,12 @@ Built using
 - docker
 - flask
 - postgres
+- sqlalchemy
 - gunicorn
 - nginx
 
 ### Hosted on digital ocean
-```http://139.59.18.6/```
+http://139.59.18.6/
 
 ### Features
 
@@ -79,11 +80,10 @@ viola the application is up, go to ```http://127.0.0.1/```
 
 ### Working
 
-- Twitter oAuth authentication is done using flask dance, first user is directed to twitter for auth, when the user is authenticated by twitter the user is redirected to our app.
+- Twitter oAuth authentication is done using flask dance, first user is directed to twitter for auth and when the user is authenticated by twitter the user is redirected to the app.
 - If the user is visiting the app for the first time, we will fetch all the tweets of user, when the same user is logged into the app next time, all the tweets from his timeline is not fetched only new tweets of the user is fetched from twitter.
-- postgres full text search: For searching the tweets of the user I've used postgres full text search capability of postgres.
-When a new tweet is fetched from twitter and inserted or updated into tweets table ```tsvupdate``` trigger is triggered and a procedure ```tsvector_update_trigger``` is executed. which will create text space vector of that tweets and save into ```tweet_tsv``` column.
-tweet : How does it feel to hear your songs on the radio!
-text space vector of the tweet : 'feel':4 'hear':6 'radio':11 'song':8
-during searching the search terms (songs radio) are compared against the tweet_tsv
-```SELECT tweet_text FROM tweets WHERE tweet_tsv @@ to_tsquery('songs & radio')```
+- Postgres full text search: For searching the tweets of the user I've used full text search capability of postgres.
+- When a new tweet is fetched from twitter and inserted or updated into tweets table ```tsvupdate``` trigger is triggered and a procedure ```tsvector_update_trigger``` is executed, which will create text space vector of that tweets and save into ```tweet_tsv``` column.
+- (example)tweet : How does it feel to hear your songs on the radio!
+- text space vector of the above tweet : 'feel':4 'hear':6 'radio':11 'song':8
+- During searching the search terms (songs radio) are compared against the tweet_tsv ```SELECT tweet_text FROM tweets WHERE tweet_tsv @@ to_tsquery('songs & radio')```
