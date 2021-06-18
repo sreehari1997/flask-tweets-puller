@@ -9,6 +9,7 @@ from .db_utils import (
     filter_tweets
 )
 from .forms import FilterForm, SearchForm
+from .tasks import pull_tweets_of_user
 
 app = Flask(__name__)
 app.wsgi_app = ReverseProxied(app.wsgi_app)
@@ -24,7 +25,7 @@ def index():
     resp = twitter.get("account/verify_credentials.json")
     assert resp.ok
     twitter_username = resp.json()["screen_name"]
-
+    pull_tweets_of_user(twitter_username)
     form = SearchForm()
     if form.validate_on_submit():
         search_terms = form.search.data
@@ -50,7 +51,6 @@ def filter():
 
     form = FilterForm()
     if form.validate_on_submit():
-        print("viola")
         start_date = form.startdate.data
         end_date = form.enddate.data
         chronological = form.chronological.data
