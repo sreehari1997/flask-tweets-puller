@@ -18,6 +18,9 @@ Built using
 - Sort & filter based on date on db
 - Ability to search tweets on db
 
+### Architecture
+![alt text](https://github.com/sreehari1997/flask-tweets-puller/blob/master/architecture.png?raw=true)
+
 ### Database
 
 DDL of tables, indices and triggers
@@ -82,6 +85,5 @@ viola the application is up, go to ```http://127.0.0.1/```
 When a new tweet is fetched from twitter and inserted or updated into tweets table ```tsvupdate``` trigger is triggered and a procedure ```tsvector_update_trigger``` is executed. which will create text space vector of that tweets and save into ```tweet_tsv``` column.
 tweet : How does it feel to hear your songs on the radio!
 text space vector of the tweet : 'feel':4 'hear':6 'radio':11 'song':8
-
-during searching the search terms are compared against the text_tsv
+during searching the search terms (songs radio) are compared against the tweet_tsv
 ```SELECT tweet_text FROM tweets WHERE tweet_tsv @@ to_tsquery('songs & radio')```
