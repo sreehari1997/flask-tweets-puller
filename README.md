@@ -8,9 +8,6 @@ Built using
 - gunicorn
 - nginx
 
-### Hosted on digital ocean
-http://139.59.18.6/
-
 ### Features
 
 - User sign in with twitter (flask dance : https://flask-dance.readthedocs.io/en/latest/)
